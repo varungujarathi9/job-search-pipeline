@@ -17,7 +17,7 @@ from pipeline.profile import Profile
 SENIORITY_LEVELS = ["junior", "mid", "senior", "staff", "principal", "manager", "director"]
 
 SENIORITY_TITLE_PATTERNS: dict[str, list[str]] = {
-    "junior": [r"\bjunior\b", r"\bentry[- ]level\b", r"\bassociate\b", r"\bI\b(?!I)"],
+    "junior": [r"\bjunior\b", r"\bentry[- ]level\b", r"\bassociate\b", r"\bI\s*$"],
     "mid": [r"\bmid[- ]level\b", r"\bII\b"],
     "senior": [r"\bsenior\b", r"\bsr\.?\b", r"\bIII\b"],
     "staff": [r"\bstaff\b", r"\blead\b"],

@@ -47,6 +47,17 @@ class TestHardFilters(unittest.TestCase):
         self.assertFalse(result.passed)
         self.assertTrue(any("seniority" in r for r in result.reasons))
 
+    def test_trailing_roman_numeral_i_title_filtered_out(self):
+        posting = _posting(title="Backend Engineer I", location="Denver, CO")
+        [result] = apply_hard_filters([posting], self.profile)
+        self.assertFalse(result.passed)
+        self.assertTrue(any("seniority" in r for r in result.reasons))
+
+    def test_standalone_word_i_in_title_is_not_misclassified_as_junior(self):
+        posting = _posting(title="Backend Engineer - I lead a small team", location="Denver, CO")
+        [result] = apply_hard_filters([posting], self.profile)
+        self.assertTrue(result.passed, result.reasons)
+
     def test_director_title_filtered_out(self):
         posting = _posting(title="Director of Engineering", location="Denver, CO")
         [result] = apply_hard_filters([posting], self.profile)
