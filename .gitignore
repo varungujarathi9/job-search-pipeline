@@ -1,0 +1,19 @@
+# Personal data - never committed. See docs/personal-data.md.
+/profile/profile.yaml
+/config/companies.yaml
+/data/
+
+# Credentials and local secrets
+*.env
+.env.*
+credentials.json
+token.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store

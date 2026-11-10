@@ -1,0 +1,38 @@
+[
+  {
+    "id": "a1b2c3d4-0001",
+    "text": "Senior Backend Engineer, Climate Data",
+    "createdAt": 1762300800000,
+    "categories": {
+      "location": "Denver, CO",
+      "team": "Engineering",
+      "commitment": "Full-time"
+    },
+    "hostedUrl": "https://jobs.lever.co/exampleclimate/a1b2c3d4-0001",
+    "descriptionPlain": "Build our climate data ingestion pipeline. Go and Postgres experience preferred. Sponsorship not available for this role."
+  },
+  {
+    "id": "a1b2c3d4-0002",
+    "text": "Engineering Manager, Platform",
+    "createdAt": 1762387200000,
+    "categories": {
+      "location": "Remote - US",
+      "team": "Engineering",
+      "commitment": "Full-time"
+    },
+    "hostedUrl": "https://jobs.lever.co/exampleclimate/a1b2c3d4-0002",
+    "descriptionPlain": "Lead a team of 6 platform engineers. Remote within the US. We can sponsor visas."
+  },
+  {
+    "id": "a1b2c3d4-0003",
+    "text": "Director of Engineering",
+    "createdAt": 1762473600000,
+    "categories": {
+      "location": "San Francisco, CA",
+      "team": "Engineering",
+      "commitment": "Full-time"
+    },
+    "hostedUrl": "https://jobs.lever.co/exampleclimate/a1b2c3d4-0003",
+    "descriptionPlain": "Director-level role based in our SF office. On-site required."
+  }
+]

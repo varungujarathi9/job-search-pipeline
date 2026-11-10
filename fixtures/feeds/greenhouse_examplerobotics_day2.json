@@ -1,0 +1,22 @@
+{
+  "jobs": [
+    {
+      "id": 4000001,
+      "title": "Senior Backend Engineer",
+      "updated_at": "2026-11-08T12:00:00-05:00",
+      "location": {"name": "Denver, CO"},
+      "absolute_url": "https://boards.greenhouse.io/examplerobotics/jobs/4000001",
+      "content": "<p>We are looking for a Senior Backend Engineer to join our platform team. Experience with Go and distributed systems required. No visa sponsorship available.</p>",
+      "departments": [{"name": "Engineering"}]
+    },
+    {
+      "id": 4000004,
+      "title": "Senior Platform Engineer",
+      "updated_at": "2026-11-08T13:00:00-05:00",
+      "location": {"name": "Denver, CO"},
+      "absolute_url": "https://boards.greenhouse.io/examplerobotics/jobs/4000004",
+      "content": "<p>New posting that appeared on day 2 of polling.</p>",
+      "departments": [{"name": "Engineering"}]
+    }
+  ]
+}
