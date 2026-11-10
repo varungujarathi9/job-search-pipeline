@@ -1,0 +1,22 @@
+{
+  "jobs": [
+    {
+      "id": "b5e6f7a8-1001",
+      "title": "Staff Software Engineer",
+      "location": "Remote - US",
+      "jobUrl": "https://jobs.ashbyhq.com/exampledevtools/b5e6f7a8-1001",
+      "publishedAt": "2026-11-04T00:00:00.000Z",
+      "descriptionPlain": "Staff engineer role focused on developer tooling. Remote, US only. Sponsorship available.",
+      "employmentType": "FullTime"
+    },
+    {
+      "id": "b5e6f7a8-1002",
+      "title": "Senior Backend Engineer",
+      "location": "Denver, CO",
+      "jobUrl": "https://jobs.ashbyhq.com/exampledevtools/b5e6f7a8-1002",
+      "publishedAt": "2026-11-05T00:00:00.000Z",
+      "descriptionPlain": "Backend engineer for our CLI and API team. No sponsorship.",
+      "employmentType": "FullTime"
+    }
+  ]
+}

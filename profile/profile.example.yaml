@@ -1,0 +1,113 @@
+# Example profile. Copy this file to profile.yaml (gitignored) and fill in
+# your own facts. Every claim in a generated resume or answer must trace back
+# to an "id" in accomplishments below - see docs/tailoring.md.
+#
+# This file uses only fictional data.
+
+candidate:
+  name: "Jordan Rivers"
+  email: "jordan.rivers@example.com"
+  phone: "+1-555-010-0100"
+  location: "Denver, CO"
+  links:
+    linkedin: "https://www.linkedin.com/in/jordan-rivers-example"
+    github: "https://github.com/jordan-rivers-example"
+    portfolio: "https://jordanrivers.example.com"
+
+target:
+  roles:
+    - "Senior Backend Engineer"
+    - "Staff Software Engineer"
+    - "Engineering Manager, Platform"
+  seniority_min: "senior"      # one of: junior, mid, senior, staff, principal, manager, director
+  seniority_max: "staff"
+  locations:
+    - "Denver, CO"
+    - "Remote - US"
+  remote_ok: true
+  relocation_ok: false
+  salary_floor_usd: 165000
+  salary_floor_basis: "base"   # base | total_comp
+
+visa:
+  needs_sponsorship: false
+  work_authorization: "US Citizen"
+
+dealbreakers:
+  - "No fully on-site roles outside Denver, CO"
+  - "No companies in weapons manufacturing"
+  - "No unpaid take-home exceeding 2 hours"
+  - "No roles requiring on-call 24/7 solo"
+
+preferences:
+  industries_preferred:
+    - "Developer tools"
+    - "Climate tech"
+  industries_avoided:
+    - "Ad tech"
+  company_stage_preferred:
+    - "Series B"
+    - "Series C"
+    - "Public"
+
+# Master list of accomplishments. Every entry needs a stable id; tailoring
+# output cites these ids. metrics should be concrete and truthful - this is
+# the only source of fact for generated resumes and answers.
+accomplishments:
+  - id: acc-001
+    title: "Led migration of billing service to event-driven architecture"
+    company: "Example Corp"
+    role: "Senior Backend Engineer"
+    start_date: "2022-01"
+    end_date: "2024-06"
+    metrics:
+      - "Reduced billing reconciliation latency from 24h to 15m"
+      - "Cut infra cost for billing stack by 32% ($180k/yr)"
+    skills: ["Kafka", "Postgres", "Go", "distributed systems"]
+    tags: ["backend", "architecture", "cost-reduction"]
+
+  - id: acc-002
+    title: "Built internal developer platform adopted by 40+ engineers"
+    company: "Example Corp"
+    role: "Senior Backend Engineer"
+    start_date: "2021-03"
+    end_date: "2022-01"
+    metrics:
+      - "Reduced new-service bootstrap time from 3 days to 45 minutes"
+      - "Adopted by 40 of 55 engineers within 2 quarters"
+    skills: ["Terraform", "Kubernetes", "Python", "developer experience"]
+    tags: ["platform", "developer-experience"]
+
+  - id: acc-003
+    title: "Mentored 3 junior engineers to mid-level promotion"
+    company: "Prior Startup Inc"
+    role: "Software Engineer II"
+    start_date: "2019-06"
+    end_date: "2021-02"
+    metrics:
+      - "All 3 mentees promoted within 18 months"
+    skills: ["mentorship", "code review"]
+    tags: ["leadership", "mentorship"]
+
+  - id: acc-004
+    title: "Shipped real-time fraud detection pipeline"
+    company: "Prior Startup Inc"
+    role: "Software Engineer II"
+    start_date: "2018-01"
+    end_date: "2019-06"
+    metrics:
+      - "Caught 23% more fraudulent transactions than legacy batch system"
+      - "Reduced false-positive rate from 8% to 2.5%"
+    skills: ["Python", "streaming", "ML pipelines"]
+    tags: ["data", "fraud", "ml"]
+
+education:
+  - degree: "B.S. Computer Science"
+    school: "Example State University"
+    graduation_year: 2017
+
+standard_answers:
+  # Short reusable answers for common application questions. Tailoring can
+  # quote or lightly adapt these, but still must not introduce new claims.
+  why_interested_template: "I'm drawn to {company}'s work on {focus_area} and want to bring my experience in {relevant_skill} to a team at this stage."
+  work_authorization_statement: "I am a US Citizen and do not require visa sponsorship."

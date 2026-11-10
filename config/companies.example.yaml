@@ -1,0 +1,29 @@
+# Example target company list. Copy this file to companies.yaml (gitignored)
+# and fill in your own 100-300 target companies. Each entry names which ATS
+# the company publishes a public job board on, and the board's identifier
+# (the token/slug that appears in that ATS's public board URL).
+#
+# How to find the identifier:
+#   Greenhouse - the board token in https://boards.greenhouse.io/<token>
+#   Lever      - the company slug in https://jobs.lever.co/<slug>
+#   Ashby      - the job-board name in https://jobs.ashbyhq.com/<name>
+#
+# This file uses fictional example companies and tokens.
+
+companies:
+  - name: "Example Robotics"
+    ats: "greenhouse"
+    board_token: "examplerobotics"
+
+  - name: "Example Climate"
+    ats: "lever"
+    board_token: "exampleclimate"
+
+  - name: "Example Devtools"
+    ats: "ashby"
+    board_token: "exampledevtools"
+
+  # Companies whose postings only appear via LinkedIn or Workday are not
+  # polled here - see docs/discovery.md for setting up saved-search email
+  # alerts for those instead. Do not add a "workday" or "linkedin" ats value;
+  # the pollers only support greenhouse, lever, and ashby.

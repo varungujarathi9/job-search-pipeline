@@ -1,0 +1,31 @@
+{
+  "jobs": [
+    {
+      "id": 4000001,
+      "title": "Senior Backend Engineer",
+      "updated_at": "2026-11-05T12:00:00-05:00",
+      "location": {"name": "Denver, CO"},
+      "absolute_url": "https://boards.greenhouse.io/examplerobotics/jobs/4000001",
+      "content": "<p>We are looking for a Senior Backend Engineer to join our platform team. Experience with Go and distributed systems required. No visa sponsorship available.</p>",
+      "departments": [{"name": "Engineering"}]
+    },
+    {
+      "id": 4000002,
+      "title": "Staff Software Engineer, Infrastructure",
+      "updated_at": "2026-11-06T09:30:00-05:00",
+      "location": {"name": "Remote - US"},
+      "absolute_url": "https://boards.greenhouse.io/examplerobotics/jobs/4000002",
+      "content": "<p>Staff-level engineer to lead our infrastructure roadmap. Remote within the US. We sponsor visas for exceptional candidates.</p>",
+      "departments": [{"name": "Engineering"}]
+    },
+    {
+      "id": 4000003,
+      "title": "Junior Backend Engineer",
+      "updated_at": "2026-11-07T08:00:00-05:00",
+      "location": {"name": "Denver, CO"},
+      "absolute_url": "https://boards.greenhouse.io/examplerobotics/jobs/4000003",
+      "content": "<p>Entry-level role, 0-2 years experience, mentorship provided.</p>",
+      "departments": [{"name": "Engineering"}]
+    }
+  ]
+}
