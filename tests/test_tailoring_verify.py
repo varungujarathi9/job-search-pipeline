@@ -79,6 +79,24 @@ class TestTailoringVerify(unittest.TestCase):
         self.assertFalse(result.is_valid)
         self.assertIn("does not resolve", result.violations[0].reason)
 
+    def test_fabricated_candidate_fact_text_is_blocked(self):
+        # candidate.name resolves to "Jordan Rivers", but the claim text is
+        # fabricated and shares no content with that field's value.
+        output = TailoredOutput(
+            target_company="Acme",
+            target_role="Senior Backend Engineer",
+            claims=[
+                Claim(
+                    text="Won a Nobel Prize in Physics",
+                    source_kind="candidate_fact",
+                    source_ref="candidate.name",
+                ),
+            ],
+        )
+        result = verify_output(output, self.profile)
+        self.assertFalse(result.is_valid)
+        self.assertIn("does not contain the value", result.violations[0].reason)
+
     def test_boilerplate_with_number_is_blocked(self):
         output = TailoredOutput(
             target_company="Acme",

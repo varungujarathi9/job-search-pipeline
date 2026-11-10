@@ -12,9 +12,9 @@ Checks performed per claim, depending on source_kind:
                     that accomplishment's title or metrics text (catches a
                     real id cited for a fabricated or altered metric).
   candidate_fact  - source_ref must resolve to a real field in the profile,
-                    and the claim text's non-numeric content is otherwise
-                    unchecked (names/locations are free text already owned
-                    by the candidate).
+                    and the claim text must contain that field's value
+                    (case/whitespace-insensitive; for a list field, at least
+                    one element of the list).
   boilerplate     - claim text must contain no digit and no token matching
                     any accomplishment's skills/tags or any company name
                     from profile.accomplishments (a boilerplate claim is not
@@ -83,12 +83,31 @@ def _verify_accomplishment_claim(claim: Claim, profile: Profile) -> str | None:
     return None
 
 
+def _normalize(text: str) -> str:
+    return " ".join(str(text).strip().lower().split())
+
+
 def _verify_candidate_fact_claim(claim: Claim, profile: Profile) -> str | None:
     if claim.source_ref is None:
         return "candidate_fact claim has no source_ref"
     value = _resolve_candidate_fact(profile, claim.source_ref)
     if value is None:
         return f"source_ref '{claim.source_ref}' does not resolve to a profile field"
+
+    claim_text = _normalize(claim.text)
+    if isinstance(value, list):
+        elements = [_normalize(v) for v in value]
+        if not any(element and element in claim_text for element in elements):
+            return (
+                f"claim text does not contain any value from profile field "
+                f"'{claim.source_ref}' ({value!r})"
+            )
+    else:
+        if _normalize(value) not in claim_text:
+            return (
+                f"claim text does not contain the value of profile field "
+                f"'{claim.source_ref}' ({value!r})"
+            )
     return None
 
 

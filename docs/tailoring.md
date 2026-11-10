@@ -7,14 +7,14 @@ Tailoring must never invent a claim. This is enforced by code, not only by promp
 `/jsp-tailor` builds output as structured claims (`pipeline/tailoring/schema.py`), not free-text prose. Each claim has a `source_kind` and a `source_ref`:
 
 - `accomplishment` - `source_ref` must be a real `accomplishments[].id` in `profile/profile.yaml`. Any number in the claim's text must also appear in that accomplishment's `title` or `metrics` text.
-- `candidate_fact` - `source_ref` is a dotted field path into the profile (e.g. `candidate.name`).
+- `candidate_fact` - `source_ref` is a dotted field path into the profile (e.g. `candidate.name`). The claim's text must contain the resolved field's value (case- and whitespace-insensitive); if the field is a list, the text must contain at least one element of that list.
 - `boilerplate` - connective text with no factual content: no digits, and no token matching any accomplishment's skill, tag, or company name.
 
 ## The gate
 
 `pipeline/tailoring/verify.py`'s `verify_output` checks every claim against the rules above. `pipeline/cli/tailor_verify.py` is the CLI wrapper `/jsp-tailor` calls after drafting - it exits non-zero and prints every offending claim's text and reason if any claim fails. The command is instructed to keep fixing and re-running until it exits 0, and never to present or save unverified output.
 
-This catches both failure modes: a fabricated accomplishment id, and a real id cited with an inflated or altered number (e.g. citing accomplishment `acc-001` but writing "90%" when the profile says "32%").
+This catches both failure modes: a fabricated accomplishment id, and a real id cited with an inflated or altered number (e.g. citing accomplishment `acc-001` but writing "90%" when the profile says "32%"). It also catches a `candidate_fact` claim that cites a real field path but writes text unrelated to that field's value (e.g. citing `candidate.name` while writing "Won a Nobel Prize in Physics").
 
 ## What this does not catch
 
