@@ -95,7 +95,72 @@ class TestTailoringVerify(unittest.TestCase):
         )
         result = verify_output(output, self.profile)
         self.assertFalse(result.is_valid)
-        self.assertIn("does not contain the value", result.violations[0].reason)
+        self.assertIn("does not equal the value", result.violations[0].reason)
+
+    def test_padded_scalar_candidate_fact_is_blocked(self):
+        # candidate.name resolves to "Jordan Rivers" exactly; padding a real
+        # value with extra fabricated words must still be blocked.
+        output = TailoredOutput(
+            target_company="Acme",
+            target_role="Senior Backend Engineer",
+            claims=[
+                Claim(
+                    text="Jordan Rivers, PhD in astrophysics",
+                    source_kind="candidate_fact",
+                    source_ref="candidate.name",
+                ),
+            ],
+        )
+        result = verify_output(output, self.profile)
+        self.assertFalse(result.is_valid)
+        self.assertIn("does not equal the value", result.violations[0].reason)
+
+    def test_padded_list_candidate_fact_is_blocked(self):
+        # target.roles is a list of real role titles; appending a fabricated
+        # segment alongside a real one must still be blocked.
+        output = TailoredOutput(
+            target_company="Acme",
+            target_role="Senior Backend Engineer",
+            claims=[
+                Claim(
+                    text="Senior Backend Engineer with 20 years at NASA and a PhD in astrophysics",
+                    source_kind="candidate_fact",
+                    source_ref="target.roles",
+                ),
+            ],
+        )
+        result = verify_output(output, self.profile)
+        self.assertFalse(result.is_valid)
+        self.assertIn("is not a list of values", result.violations[0].reason)
+
+    def test_bare_scalar_candidate_fact_passes(self):
+        output = TailoredOutput(
+            target_company="Acme",
+            target_role="Senior Backend Engineer",
+            claims=[
+                Claim(text="Jordan Rivers", source_kind="candidate_fact", source_ref="candidate.name"),
+            ],
+        )
+        result = verify_output(output, self.profile)
+        self.assertTrue(result.is_valid, result.violations)
+
+    def test_list_of_real_elements_candidate_fact_passes(self):
+        # target.roles in profile.example.yaml includes "Senior Backend
+        # Engineer" and "Staff Software Engineer"; citing both, joined with
+        # "and", must pass since each segment is a real list element.
+        output = TailoredOutput(
+            target_company="Acme",
+            target_role="Senior Backend Engineer",
+            claims=[
+                Claim(
+                    text="Senior Backend Engineer and Staff Software Engineer",
+                    source_kind="candidate_fact",
+                    source_ref="target.roles",
+                ),
+            ],
+        )
+        result = verify_output(output, self.profile)
+        self.assertTrue(result.is_valid, result.violations)
 
     def test_boilerplate_with_number_is_blocked(self):
         output = TailoredOutput(

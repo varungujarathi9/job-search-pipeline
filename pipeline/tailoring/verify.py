@@ -12,9 +12,10 @@ Checks performed per claim, depending on source_kind:
                     that accomplishment's title or metrics text (catches a
                     real id cited for a fabricated or altered metric).
   candidate_fact  - source_ref must resolve to a real field in the profile,
-                    and the claim text must contain that field's value
-                    (case/whitespace-insensitive; for a list field, at least
-                    one element of the list).
+                    and the claim text, once normalized, must equal that
+                    field's value; for a list field, the text must equal one
+                    element, or split (on commas/semicolons/" and ") into one
+                    or more segments that each equal an element.
   boilerplate     - claim text must contain no digit and no token matching
                     any accomplishment's skills/tags or any company name
                     from profile.accomplishments (a boilerplate claim is not
@@ -87,6 +88,13 @@ def _normalize(text: str) -> str:
     return " ".join(str(text).strip().lower().split())
 
 
+SEGMENT_SPLIT_PATTERN = re.compile(r",|;| and ")
+
+
+def _split_segments(text: str) -> list[str]:
+    return [seg.strip() for seg in SEGMENT_SPLIT_PATTERN.split(text) if seg.strip()]
+
+
 def _verify_candidate_fact_claim(claim: Claim, profile: Profile) -> str | None:
     if claim.source_ref is None:
         return "candidate_fact claim has no source_ref"
@@ -96,16 +104,17 @@ def _verify_candidate_fact_claim(claim: Claim, profile: Profile) -> str | None:
 
     claim_text = _normalize(claim.text)
     if isinstance(value, list):
-        elements = [_normalize(v) for v in value]
-        if not any(element and element in claim_text for element in elements):
+        elements = {_normalize(v) for v in value}
+        segments = _split_segments(claim_text)
+        if not segments or not all(segment in elements for segment in segments):
             return (
-                f"claim text does not contain any value from profile field "
+                f"claim text is not a list of values from profile field "
                 f"'{claim.source_ref}' ({value!r})"
             )
     else:
-        if _normalize(value) not in claim_text:
+        if claim_text != _normalize(value):
             return (
-                f"claim text does not contain the value of profile field "
+                f"claim text does not equal the value of profile field "
                 f"'{claim.source_ref}' ({value!r})"
             )
     return None

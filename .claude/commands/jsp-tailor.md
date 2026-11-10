@@ -30,7 +30,7 @@ Do not draft a resume as free text first. Build a `TailoredOutput` JSON object d
 Rules while drafting, enforced mechanically in the next step - do not rely on getting these right from memory alone:
 
 - `accomplishment` claims: `source_ref` must be a real `accomplishments[].id` from the profile. Only restate numbers that literally appear in that accomplishment's `title` or `metrics` - do not round up, combine two accomplishments' numbers, or invent a number that sounds plausible.
-- `candidate_fact` claims: `source_ref` is a dotted field path into the profile (e.g. `candidate.name`, `candidate.email`, `education.0.degree`). The claim's `text` must restate that field's actual value - the gate blocks any `candidate_fact` claim whose text doesn't contain the resolved value.
+- `candidate_fact` claims: `source_ref` is a dotted field path into the profile (e.g. `candidate.name`, `candidate.email`, `education.0.degree`). The claim's `text` must equal that field's actual value exactly (for a list field, one element, or multiple elements joined with commas/semicolons/"and") - no extra words. The gate blocks any `candidate_fact` claim whose text is padded with content beyond the resolved value. Write any descriptive sentence (experience, achievements, biography) as an `accomplishment` claim instead.
 - `boilerplate` claims: connective text only ("I'm excited to apply because..."). No numbers, no company names, no skill names - those need a real `source_ref` instead.
 
 Select and order accomplishments by relevance to the posting's title/description, but never alter their text's factual content.
