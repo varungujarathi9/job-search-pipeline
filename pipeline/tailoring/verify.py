@@ -13,9 +13,9 @@ Checks performed per claim, depending on source_kind:
                     real id cited for a fabricated or altered metric).
   candidate_fact  - source_ref must resolve to a real field in the profile,
                     and the claim text, once normalized, must equal that
-                    field's value; for a list field, the text must equal one
-                    element, or split (on commas/semicolons/" and ") into one
-                    or more segments that each equal an element.
+                    field's value; for a list field, the text must equal
+                    exactly one element of the list (cite multiple values as
+                    separate claims, one per value).
   boilerplate     - claim text must contain no digit and no token matching
                     any accomplishment's skills/tags or any company name
                     from profile.accomplishments (a boilerplate claim is not
@@ -88,13 +88,6 @@ def _normalize(text: str) -> str:
     return " ".join(str(text).strip().lower().split())
 
 
-SEGMENT_SPLIT_PATTERN = re.compile(r",|;| and ")
-
-
-def _split_segments(text: str) -> list[str]:
-    return [seg.strip() for seg in SEGMENT_SPLIT_PATTERN.split(text) if seg.strip()]
-
-
 def _verify_candidate_fact_claim(claim: Claim, profile: Profile) -> str | None:
     if claim.source_ref is None:
         return "candidate_fact claim has no source_ref"
@@ -105,10 +98,9 @@ def _verify_candidate_fact_claim(claim: Claim, profile: Profile) -> str | None:
     claim_text = _normalize(claim.text)
     if isinstance(value, list):
         elements = {_normalize(v) for v in value}
-        segments = _split_segments(claim_text)
-        if not segments or not all(segment in elements for segment in segments):
+        if claim_text not in elements:
             return (
-                f"claim text is not a list of values from profile field "
+                f"claim text does not equal any single element of profile field "
                 f"'{claim.source_ref}' ({value!r})"
             )
     else:

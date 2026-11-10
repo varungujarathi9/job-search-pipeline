@@ -7,7 +7,7 @@ Tailoring must never invent a claim. This is enforced by code, not only by promp
 `/jsp-tailor` builds output as structured claims (`pipeline/tailoring/schema.py`), not free-text prose. Each claim has a `source_kind` and a `source_ref`:
 
 - `accomplishment` - `source_ref` must be a real `accomplishments[].id` in `profile/profile.yaml`. Any number in the claim's text must also appear in that accomplishment's `title` or `metrics` text.
-- `candidate_fact` - `source_ref` is a dotted field path into the profile (e.g. `candidate.name`). The claim's text, once normalized for case and whitespace, must equal the resolved field's value exactly - no padding with other words. If the field is a list, the text must equal one element, or (when split on commas, semicolons, or " and ") every resulting segment must equal an element. A `candidate_fact` claim cannot carry any descriptive or biographical content beyond the field's literal value - that belongs in an `accomplishment` claim instead.
+- `candidate_fact` - `source_ref` is a dotted field path into the profile (e.g. `candidate.name`). The claim's text, once normalized for case and whitespace, must equal the resolved field's value exactly - no padding with other words. If the field is a list, the text must equal exactly one element of that list; to cite more than one value, write a separate claim per value rather than joining them in one claim's text. A `candidate_fact` claim cannot carry any descriptive or biographical content beyond the field's literal value - that belongs in an `accomplishment` claim instead.
 - `boilerplate` - connective text with no factual content: no digits, and no token matching any accomplishment's skill, tag, or company name.
 
 ## The gate

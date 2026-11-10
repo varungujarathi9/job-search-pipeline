@@ -131,7 +131,7 @@ class TestTailoringVerify(unittest.TestCase):
         )
         result = verify_output(output, self.profile)
         self.assertFalse(result.is_valid)
-        self.assertIn("is not a list of values", result.violations[0].reason)
+        self.assertIn("does not equal any single element", result.violations[0].reason)
 
     def test_bare_scalar_candidate_fact_passes(self):
         output = TailoredOutput(
@@ -144,10 +144,27 @@ class TestTailoringVerify(unittest.TestCase):
         result = verify_output(output, self.profile)
         self.assertTrue(result.is_valid, result.violations)
 
-    def test_list_of_real_elements_candidate_fact_passes(self):
-        # target.roles in profile.example.yaml includes "Senior Backend
-        # Engineer" and "Staff Software Engineer"; citing both, joined with
-        # "and", must pass since each segment is a real list element.
+    def test_comma_bearing_list_element_cited_alone_passes(self):
+        # target.roles includes "Engineering Manager, Platform" verbatim
+        # (profile/profile.example.yaml) - citing it alone, unmodified, must
+        # pass even though it contains an internal comma.
+        output = TailoredOutput(
+            target_company="Acme",
+            target_role="Engineering Manager, Platform",
+            claims=[
+                Claim(
+                    text="Engineering Manager, Platform",
+                    source_kind="candidate_fact",
+                    source_ref="target.roles",
+                ),
+            ],
+        )
+        result = verify_output(output, self.profile)
+        self.assertTrue(result.is_valid, result.violations)
+
+    def test_two_real_list_values_joined_in_one_claim_is_blocked(self):
+        # Citing two real target.roles values together in a single claim is
+        # not "one element" and must be blocked - write one claim per value.
         output = TailoredOutput(
             target_company="Acme",
             target_role="Senior Backend Engineer",
@@ -160,7 +177,8 @@ class TestTailoringVerify(unittest.TestCase):
             ],
         )
         result = verify_output(output, self.profile)
-        self.assertTrue(result.is_valid, result.violations)
+        self.assertFalse(result.is_valid)
+        self.assertIn("does not equal any single element", result.violations[0].reason)
 
     def test_boilerplate_with_number_is_blocked(self):
         output = TailoredOutput(
