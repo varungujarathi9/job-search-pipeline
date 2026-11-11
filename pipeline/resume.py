@@ -23,6 +23,7 @@ Layout produced (see docs/tailoring.md for the full contract):
 from __future__ import annotations
 
 import dataclasses
+import re
 
 from pipeline.profile import Accomplishment, Profile
 from pipeline.tailoring.schema import TailoredOutput
@@ -111,7 +112,9 @@ def _build_skill_groups(profile: Profile, all_claim_text: str) -> list[tuple[str
     lowered_text = all_claim_text.lower()
 
     def group_mentioned(values: list[str]) -> bool:
-        return any(v.lower() in lowered_text for v in values)
+        return any(
+            re.search(rf"\b{re.escape(v.lower())}\b", lowered_text) for v in values
+        )
 
     groups = [(label, skills[label]) for label in _SKILL_GROUP_ORDER if skills.get(label)]
     # Preserve relative order within "mentioned" and "not mentioned" buckets.

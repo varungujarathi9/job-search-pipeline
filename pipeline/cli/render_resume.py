@@ -26,7 +26,7 @@ from pathlib import Path
 
 from pipeline.profile import ProfileError, load_profile
 from pipeline.resume import build_layout
-from pipeline.resume_pdf import render_pdf
+from pipeline.resume_pdf import ResumeTooLongError, render_pdf
 from pipeline.tailoring.schema import TailoredOutput
 from pipeline.tailoring.verify import verify_output
 
@@ -96,15 +96,21 @@ def main(argv: list[str] | None = None) -> int:
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     canonical_path = args.out_dir / f"{args.dedupe_key}.pdf"
-    render_pdf(layout, canonical_path)
-
     name_parts = layout.candidate_name.split()
     first = _safe_name_part(name_parts[0]) if name_parts else "Unknown"
     last = _safe_name_part(name_parts[-1]) if len(name_parts) > 1 else "Resume"
     company = _find_company_for_dedupe_key(args.matches_dir, args.dedupe_key) or output.target_company
     friendly_name = f"{first}_{last}_Resume_{_safe_name_part(company)}.pdf"
     friendly_path = args.out_dir / friendly_name
-    render_pdf(layout, friendly_path)
+
+    try:
+        render_pdf(layout, canonical_path)
+        render_pdf(layout, friendly_path)
+    except ResumeTooLongError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        canonical_path.unlink(missing_ok=True)
+        friendly_path.unlink(missing_ok=True)
+        return 1
 
     print(f"OK: wrote {canonical_path}")
     print(f"OK: wrote {friendly_path}")

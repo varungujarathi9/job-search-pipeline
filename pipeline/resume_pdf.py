@@ -21,6 +21,10 @@ _FONT = "Helvetica"
 _FONT_BOLD = "Helvetica-Bold"
 
 
+class ResumeTooLongError(Exception):
+    """Raised when a layout cannot fit on one US Letter page."""
+
+
 def _wrap(text: str, canvas_obj: canvas.Canvas, font: str, size: float, max_width: float) -> list[str]:
     words = text.split()
     lines: list[str] = []
@@ -49,6 +53,12 @@ def render_pdf(layout: ResumeLayout, output_path: Path) -> None:
     def line_break(amount: float) -> None:
         nonlocal y
         y -= amount
+        if y < _MARGIN:
+            raise ResumeTooLongError(
+                "Resume content does not fit on one US Letter page. "
+                "Shorten bullets, drop lower-priority accomplishments, or "
+                "trim skills/education/projects in profile.yaml."
+            )
 
     def draw(text: str, font: str, size: float, extra_gap: float = 0.0) -> None:
         nonlocal y
