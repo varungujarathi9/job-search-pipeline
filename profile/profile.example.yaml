@@ -6,6 +6,10 @@
 
 candidate:
   name: "Jordan Rivers"
+  # Optional: fill these only if your legal name differs from the preferred
+  # name above - some application forms ask for legal name separately.
+  legal_first_name: "Jordanna"
+  legal_last_name: "Riversmith"
   email: "jordan.rivers@example.com"
   phone: "+1-555-010-0100"
   location: "Denver, CO"
@@ -101,10 +105,30 @@ accomplishments:
     skills: ["Python", "streaming", "ML pipelines"]
     tags: ["data", "fraud", "ml"]
 
+# Optional. Used by the resume generator (pipeline/cli/render_resume.py) to
+# build a skills line, reordered per posting to put the most relevant group
+# first. Omit entirely if you don't want a skills section.
+skills:
+  languages: ["Python", "Go", "SQL"]
+  frameworks_tools: ["Kafka", "Terraform", "Kubernetes"]
+  cloud: ["AWS", "GCP"]
+
 education:
   - degree: "B.S. Computer Science"
     school: "Example State University"
     graduation_year: 2017
+
+# Optional. Project accomplishments with no employer - kept in their own
+# resume section rather than under a role. Same id/title/metrics/skills/tags
+# shape as accomplishments, minus company/role/dates.
+projects:
+  - id: proj-001
+    title: "Open-source YAML schema linter"
+    metrics:
+      - "400+ GitHub stars"
+      - "Adopted by 2 other open-source projects as a pre-commit hook"
+    skills: ["Python", "JSON Schema"]
+    tags: ["open-source", "tooling"]
 
 standard_answers:
   # Short reusable answers for common application questions. Tailoring can

@@ -32,6 +32,11 @@ class Accomplishment:
     metrics: list[str]
     skills: list[str]
     tags: list[str]
+    company: str | None
+    role: str | None
+    start_date: str | None
+    end_date: str | None
+    is_project: bool
     raw: dict[str, Any]
 
 
@@ -54,6 +59,22 @@ class Profile:
 
     def has_accomplishment(self, accomplishment_id: str) -> bool:
         return accomplishment_id in self.accomplishments_by_id
+
+    @property
+    def skills(self) -> dict[str, list[str]]:
+        return self.data.get("skills", {}) or {}
+
+    @property
+    def education(self) -> list[dict[str, Any]]:
+        return self.data.get("education", []) or []
+
+    @property
+    def role_accomplishments(self) -> list[Accomplishment]:
+        return [a for a in self.accomplishments_by_id.values() if not a.is_project]
+
+    @property
+    def projects(self) -> list[Accomplishment]:
+        return [a for a in self.accomplishments_by_id.values() if a.is_project]
 
 
 def load_profile(path: Path | None = None) -> Profile:
@@ -83,11 +104,18 @@ def validate_profile(data: dict[str, Any]) -> Profile:
     if not isinstance(accomplishments_raw, list) or not accomplishments_raw:
         raise ProfileError("Profile must include a non-empty 'accomplishments' list.")
 
+    projects_raw = data.get("projects", []) or []
+    if not isinstance(projects_raw, list):
+        raise ProfileError("Profile 'projects', if present, must be a list.")
+
     seen_ids: set[str] = set()
     accomplishments_by_id: dict[str, Accomplishment] = {}
-    for entry in accomplishments_raw:
+    for entry, is_project in [(e, False) for e in accomplishments_raw] + [
+        (e, True) for e in projects_raw
+    ]:
         if "id" not in entry:
-            raise ProfileError(f"Accomplishment missing 'id': {entry!r}")
+            kind = "project" if is_project else "accomplishment"
+            raise ProfileError(f"{kind.capitalize()} missing 'id': {entry!r}")
         acc_id = entry["id"]
         if acc_id in seen_ids:
             raise ProfileError(f"Duplicate accomplishment id: {acc_id}")
@@ -98,6 +126,11 @@ def validate_profile(data: dict[str, Any]) -> Profile:
             metrics=entry.get("metrics", []),
             skills=entry.get("skills", []),
             tags=entry.get("tags", []),
+            company=entry.get("company"),
+            role=entry.get("role"),
+            start_date=entry.get("start_date"),
+            end_date=entry.get("end_date"),
+            is_project=is_project,
             raw=entry,
         )
 
