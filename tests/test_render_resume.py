@@ -7,7 +7,8 @@ from pathlib import Path
 import yaml
 
 from pipeline.profile import validate_profile
-from pipeline.resume import build_layout
+from pipeline.resume import ResumeLayout, RoleSection, build_layout
+from pipeline.resume_pdf import ResumeTooLongError, render_pdf
 from pipeline.tailoring.schema import Claim, TailoredOutput
 from pipeline.tailoring.verify import verify_output
 
@@ -167,6 +168,59 @@ class TestResumeLayout(unittest.TestCase):
         self.assertIn("100 fictional users", bullets[0])
 
 
+class TestRenderPdfOverflow(unittest.TestCase):
+    def test_raises_when_content_exceeds_one_page(self):
+        oversized_layout = ResumeLayout(
+            candidate_name="Overflow Candidate",
+            contact_line="overflow@example.com | +1-555-000-0000 | Nowhere, NA",
+            role_sections=[
+                RoleSection(
+                    company=f"Company {i}",
+                    role=f"Role {i}",
+                    start_date="2010-01",
+                    end_date="2020-01",
+                    bullets=[
+                        f"Long bullet point {j} describing an accomplishment "
+                        "with enough detail and metrics to take up real space."
+                        for j in range(5)
+                    ],
+                )
+                for i in range(10)
+            ],
+            skill_groups=[],
+            education=[],
+            projects=[],
+        )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            out_path = Path(tmp_dir) / "overflow.pdf"
+            with self.assertRaises(ResumeTooLongError):
+                render_pdf(oversized_layout, out_path)
+
+    def test_fits_a_small_layout_on_one_page(self):
+        small_layout = ResumeLayout(
+            candidate_name="Fits Candidate",
+            contact_line="fits@example.com | +1-555-000-0000 | Nowhere, NA",
+            role_sections=[
+                RoleSection(
+                    company="Only Company",
+                    role="Only Role",
+                    start_date="2022-01",
+                    end_date="2024-01",
+                    bullets=["Did one thing."],
+                )
+            ],
+            skill_groups=[],
+            education=[],
+            projects=[],
+        )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            out_path = Path(tmp_dir) / "fits.pdf"
+            render_pdf(small_layout, out_path)
+            self.assertTrue(out_path.exists())
+
+
 class TestRenderResumeCli(unittest.TestCase):
     def setUp(self):
         self.tmp_dir = tempfile.TemporaryDirectory()
@@ -248,6 +302,57 @@ class TestRenderResumeCli(unittest.TestCase):
 
         friendly_matches = list(self.out_dir.glob("Fictional_Candidate_Resume_*.pdf"))
         self.assertEqual(len(friendly_matches), 1)
+
+    def test_overflow_refuses_and_cleans_up_both_paths(self):
+        bullet = (
+            "Led a large cross-functional initiative spanning several teams, "
+            "delivering measurable impact across the organization with detailed "
+            "metrics and long-form narrative description of the work performed."
+        )
+        accomplishments = []
+        claims = []
+        for i in range(20):
+            for b in range(3):
+                acc_id = f"acc-overflow-{i}-{b}"
+                accomplishments.append(
+                    f"""  - id: {acc_id}
+    title: "Did overflow thing {i}-{b}"
+    company: "Overflow Company {i}"
+    role: "Overflow Role {i}"
+    start_date: "{2000 + i}-01"
+    end_date: "{2000 + i}-12"
+    metrics:
+      - "Metric line for accomplishment {i}-{b}"
+    skills: ["Pythonic"]
+    tags: ["fictional"]"""
+                )
+                claims.append(
+                    Claim(text=bullet, source_kind="accomplishment", source_ref=acc_id)
+                )
+
+        overflow_profile_yaml = _FICTIONAL_PROFILE_YAML.replace(
+            "accomplishments:\n",
+            "accomplishments:\n" + "\n".join(accomplishments) + "\n",
+            1,
+        )
+        self.profile_path.write_text(overflow_profile_yaml, encoding="utf-8")
+
+        output = TailoredOutput(
+            target_company="Fictional Target Co",
+            target_role="Fictional Engineer",
+            claims=claims,
+        )
+        self._write_draft(output)
+
+        result = self._run_cli()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("one US Letter page", result.stderr)
+
+        canonical = self.out_dir / "fict123.pdf"
+        friendly_matches = list(self.out_dir.glob("Fictional_Candidate_Resume_*.pdf"))
+        self.assertFalse(canonical.exists())
+        self.assertEqual(friendly_matches, [])
 
 
 if __name__ == "__main__":

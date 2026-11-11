@@ -113,7 +113,10 @@ def _build_skill_groups(profile: Profile, all_claim_text: str) -> list[tuple[str
 
     def group_mentioned(values: list[str]) -> bool:
         return any(
-            re.search(rf"\b{re.escape(v.lower())}\b", lowered_text) for v in values
+            re.search(
+                rf"(?<![A-Za-z0-9]){re.escape(v.lower())}(?![A-Za-z0-9])", lowered_text
+            )
+            for v in values
         )
 
     groups = [(label, skills[label]) for label in _SKILL_GROUP_ORDER if skills.get(label)]
