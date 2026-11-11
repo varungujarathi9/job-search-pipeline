@@ -7,7 +7,11 @@
 - The command's instructions name the exact submit-labeled controls it must never click, and tell the agent to stop and ask rather than guess when a control's purpose is unclear. This holds per application - finishing one form never relaxes the rule for the next.
 - There is no "auto-submit" mode, flag, or argument - the command has exactly one path, and it ends at "stop" after filling every form in the run.
 - The command requires a verified draft (`/jsp-tailor` must have already passed `pipeline/cli/tailor_verify.py`) and a rendered resume PDF before it will pre-fill anything for a given dedupe_key.
-- Candidate-only questions are left blank rather than answered on the candidate's behalf: attestations and certifications, consent and privacy acknowledgements, legal work-authorization wording, demographic questions, and any question asking whether an AI agent filled the application.
+- Candidate-only questions are left blank rather than answered on the candidate's behalf: attestations and certifications, consent and privacy acknowledgements, legal work-authorization wording, demographic questions, and any question asking whether an AI agent filled the application. This holds even when the form marks the question required - the command never invents an answer to satisfy a required-field constraint, it reports the blank required field to the user instead.
+
+## Required fields
+
+Every other required field - one the command can answer from `profile/profile.yaml` or the verified draft - is always filled, not skipped just because it takes more than a literal copy-paste (selecting the closest matching option in a required dropdown, checking a required checkbox whose statement is true per the profile, and so on). "Required" is not itself a reason to leave a field blank; only the candidate-only categories above are. The per-application report in step 3 calls out any required field that was left blank, since the user will need to fill it themselves before the form can submit.
 
 ## Browser automation can only read workspace files
 

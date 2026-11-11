@@ -30,8 +30,9 @@ For each dedupe_key in the worklist, open a new browser tab (do not reuse anothe
 3. Fill each field from the verified draft content - resume bullets and short answers from `data/drafts/<dedupe_key>.md`, contact fields from `profile/profile.yaml`'s `candidate` section.
 4. For a resume file upload, attach `data/resumes/<dedupe_key>.pdf` (or the human-friendly `data/resumes/<First>_<Last>_Resume_<Company>.pdf` copy, whichever the control accepts) - this tool can only read files inside the workspace, which is why the PDF lives under `data/` rather than elsewhere on disk.
 5. Where a form asks for **legal name** separately from preferred/display name, use `profile/profile.yaml`'s `candidate.legal_first_name` / `candidate.legal_last_name` if present; if the field just says "name" with no legal/preferred distinction, use `candidate.name` as usual.
-6. Leave blank and list for the candidate, rather than guessing or inventing an answer: attestations and certifications ("I certify that..."), consent and privacy acknowledgements, legal work-authorization wording beyond the plain yes/no `profile/profile.yaml`'s `visa` section already answers, demographic questions (race, gender, veteran status, disability status, etc.), and any question asking whether an AI agent or automated tool filled out the application.
-7. Leave any other field you are not confident about blank and flag it to the user rather than guessing.
+6. **Always fill every required field** (marked with an asterisk, "required", or that blocks submission when empty) that you can answer from `profile/profile.yaml` or the verified draft - do not leave a required field blank just because filling it takes more than a literal copy-paste (e.g. select the closest matching option in a required dropdown, check a required checkbox whose statement is simply true per the profile). "Required" is not by itself a reason to skip a field; only the categories in the next point are.
+7. Leave blank and list for the candidate, rather than guessing or inventing an answer - even if the field is marked required: attestations and certifications ("I certify that..."), consent and privacy acknowledgements, legal work-authorization wording beyond the plain yes/no `profile/profile.yaml`'s `visa` section already answers, demographic questions (race, gender, veteran status, disability status, etc.), and any question asking whether an AI agent or automated tool filled out the application. A required field in this list stays blank and gets listed in the "Stop and report" section below like any other - never invent an answer just to satisfy a required-field constraint.
+8. Leave any other field you are not confident about blank and flag it to the user rather than guessing, required or not.
 
 Keep working through every dedupe_key in the worklist in its own tab before reporting - do not stop after the first application to report, unless you hit something that needs the user's input first (an ambiguous submit-like control, a login wall, etc.), in which case report that specific block and continue with the remaining applications.
 
@@ -41,7 +42,7 @@ Once every application in the worklist is filled, stop. Do not click any submit 
 
 - The posting (company, title, url)
 - Which fields were filled and from what source, including that the tailored PDF was attached
-- Which fields were left blank and why (candidate-only question, low confidence, etc.)
+- Which fields were left blank and why (candidate-only question, low confidence, etc.) - call out any of these that are marked required, since the user must fill those themselves before the form will submit
 - That the form is ready for their review and that they must click submit themselves
 
 Then give one combined summary: how many applications were filled versus skipped (and why skipped), so the user can review and submit each in turn.
