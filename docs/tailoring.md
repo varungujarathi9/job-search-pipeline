@@ -20,6 +20,12 @@ This catches both failure modes: a fabricated accomplishment id, and a real id c
 
 The verifier checks numeric and identity traceability, not qualitative truthfulness - it cannot tell you whether a claim is a fair paraphrase of the cited accomplishment's prose. Review the rendered `data/drafts/<dedupe_key>.md` yourself before using it.
 
-## Resume file generation
+## Resume PDF generation
 
-This repo does not currently generate a PDF/DOCX resume file. `/jsp-apply` points you at the verified Markdown draft to incorporate into your own resume document and upload yourself.
+`pipeline/cli/render_resume.py` (invoked as `python3 -m pipeline.cli.render_resume <dedupe_key>`, called by `/jsp-tailor` after verification passes) renders a one-page US Letter resume PDF from a verified draft. It re-runs `verify_output` itself and refuses to render if the draft doesn't pass, so a PDF can never be produced from unverified content even if called directly.
+
+It uses only two sources of text: `profile/profile.yaml` facts (contact line, education, skills, accomplishment/project title and metrics as a fallback) and the verified draft's own claim text (preferred, where a claim cites that accomplishment). See `pipeline/resume.py` for the layout rules: accomplishments grouped under their role in reverse-chronological order, bullets within a role ordered by the draft's relevance order, skills reordered to put any group mentioned in the draft's claims first, plus education and projects sections.
+
+It writes `data/resumes/<dedupe_key>.pdf` (canonical name) and a human-friendly copy `data/resumes/<First>_<Last>_Resume_<Company>.pdf` - `/jsp-apply` attaches the latter to the application's resume upload.
+
+**Why reportlab, not a headless browser:** rendering goes through `reportlab` (pure Python, pinned in `requirements.txt`), not an HTML-to-PDF conversion via a locally installed Chrome/Chromium. A pure-Python dependency installs the same way as the rest of this project's requirements and has no dependency on a browser binary being present or at a particular version; it also keeps PDF generation out of the browser-automation tool entirely (see docs/submission.md for why that tool is restricted to files inside the workspace).

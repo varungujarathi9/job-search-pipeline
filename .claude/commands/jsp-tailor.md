@@ -49,4 +49,16 @@ If it exits non-zero, it printed every offending claim and why. Fix those specif
 
 ## 4. Render human-readable output and report
 
-Once verified, render the claims into a short resume-bullet list and a response to any application question the user named, and save that rendering to `data/drafts/<dedupe_key>.md`. Tell the user the verification passed, show the rendered content, and name both saved file paths.
+Once verified, render the claims into a short resume-bullet list and a response to any application question the user named, and save that rendering to `data/drafts/<dedupe_key>.md`.
+
+## 5. Render the resume PDF
+
+Run:
+
+```
+python3 -m pipeline.cli.render_resume <dedupe_key>
+```
+
+This re-runs the same verification gate before rendering and refuses an unverified draft, so it cannot drift from step 3's result. It writes `data/resumes/<dedupe_key>.pdf` (canonical name) and a human-friendly copy named `<First>_<Last>_Resume_<Company>.pdf` in the same directory - attach the human-friendly copy to application uploads. If it exits non-zero, it printed the same kind of violation detail as step 3; do not hand-edit the draft to paper over it - fix the underlying claim and re-run from step 3.
+
+Tell the user the verification passed, show the rendered content, and name the draft, markdown, and both PDF file paths.
