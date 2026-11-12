@@ -9,11 +9,12 @@
 - `target.seniority_min` / `target.seniority_max` - one of `junior, mid, senior, staff, principal, manager, director`. Used by the hard seniority filter (`pipeline/hard_filters.py`).
 - `target.locations`, `target.remote_ok`, `target.relocation_ok` - used by the hard location filter.
 - `target.salary_floor_usd`, `target.salary_floor_basis` - used by scoring when a posting states compensation.
-- `visa.needs_sponsorship` - used by the hard sponsorship filter. If `false`, the filter never excludes a posting on sponsorship language (sponsorship-related text is irrelevant to a candidate who does not need it).
+- `visa.needs_sponsorship` - used by the hard sponsorship filter. If `false`, the filter never excludes a posting on sponsorship language (sponsorship-related text is irrelevant to a candidate who does not need it). `visa.work_authorization` is a free-text statement (e.g. "US Citizen") `/jsp-apply` uses for a plain work-authorization question.
 - `dealbreakers` - free text. Not hard-filtered in code (hard filters are limited to location, seniority, sponsorship per the pipeline's design), but scoring is instructed to score near zero and explain when a dealbreaker shows up in a posting.
 - `preferences` - industries and company stage, used as soft scoring signal.
 - `accomplishments` - your master list. Each entry needs a unique, stable `id` (e.g. `acc-001`), a `title`, `metrics` (concrete, truthful numbers), `skills`, and `tags`, plus `company`, `role`, `start_date`, `end_date` (used by the resume generator to group bullets under the right role in reverse-chronological order). Tailoring can only restate a metric that literally appears in that entry's `title` or `metrics` text.
-- `education`, `standard_answers` - supporting facts and reusable phrasing.
+- `education` - supporting facts.
+- `standard_answers` - reusable phrasing and plain factual answers `/jsp-apply` fills required fields from directly (not tailored, not claims - just your own stated facts): `why_interested_template`, `work_authorization_statement`, `work_authorized_us` (bool), `age_18_or_older` (bool). Demographic questions (race, gender, veteran status, disability status, etc.) are deliberately not modeled here - `/jsp-apply` always selects the form's own decline-to-answer option for those instead.
 - `skills` (optional) - `languages`, `frameworks_tools`, `cloud` lists. Used by the resume generator to render a skills line; `/jsp-tailor` can cite these as `candidate_fact` claims to signal which group is most relevant to a posting, and the generator puts cited groups first.
 - `projects` (optional) - same shape as `accomplishments` (`id`, `title`, `metrics`, `skills`, `tags`) but without `company`/`role`/dates, for work with no employer. Kept in their own resume section. ids share the same namespace as `accomplishments` and can be cited the same way in tailored claims.
 
