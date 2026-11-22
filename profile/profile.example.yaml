@@ -135,3 +135,10 @@ standard_answers:
   # quote or lightly adapt these, but still must not introduce new claims.
   why_interested_template: "I'm drawn to {company}'s work on {focus_area} and want to bring my experience in {relevant_skill} to a team at this stage."
   work_authorization_statement: "I am a US Citizen and do not require visa sponsorship."
+  # Plain factual answers /jsp-apply fills a required field from directly -
+  # not claims, not tailored, just the candidate's own stated facts.
+  work_authorized_us: true
+  age_18_or_older: true
+  # Demographic questions (race, gender, veteran status, disability status,
+  # etc.) are never modeled here - /jsp-apply always selects the form's own
+  # decline-to-answer option for these, regardless of this file's contents.

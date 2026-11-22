@@ -99,7 +99,7 @@ def main(argv: list[str] | None = None) -> int:
     name_parts = layout.candidate_name.split()
     first = _safe_name_part(name_parts[0]) if name_parts else "Unknown"
     last = _safe_name_part(name_parts[-1]) if len(name_parts) > 1 else "Resume"
-    company = _find_company_for_dedupe_key(args.matches_dir, args.dedupe_key) or output.target_company
+    company = _find_company_for_dedupe_key(args.matches_dir, args.dedupe_key) or output.target_company or "Unknown"
     friendly_name = f"{first}_{last}_Resume_{_safe_name_part(company)}.pdf"
     friendly_path = args.out_dir / friendly_name
 

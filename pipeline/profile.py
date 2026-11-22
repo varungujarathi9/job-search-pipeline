@@ -65,6 +65,10 @@ class Profile:
         return self.data.get("skills", {}) or {}
 
     @property
+    def standard_answers(self) -> dict[str, Any]:
+        return self.data.get("standard_answers", {}) or {}
+
+    @property
     def education(self) -> list[dict[str, Any]]:
         return self.data.get("education", []) or []
 
